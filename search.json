@@ -1,24 +1,10 @@
 [
   {
-    "objectID": "contact.html",
-    "href": "contact.html",
-    "title": "Contact",
-    "section": "",
-    "text": "Biplabendu (Billu) Das\nbiplabendu.das@gmail.com\nhttps://biplabendu.github.io/homepage/"
-  },
-  {
-    "objectID": "antwiki.html",
-    "href": "antwiki.html",
-    "title": "Statistics from Ant Wiki",
-    "section": "",
-    "text": "Last updated on 2025-06-01.\n\nThis website contain statistics obtained from AntWiki.\n\n\n\nDownloading data for:  Pogonomyrmex...Done \nDownloading data for:  Camponotus...Done"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Statistics from SRA (ants)",
     "section": "",
-    "text": "Last updated on 2025-06-01.\nThis website contain statistics obtained from # Sequence Read Archive (SRA) database.\nFor questions, please contact us via email."
+    "text": "Last updated on 2025-07-03."
   },
   {
     "objectID": "index.html#distribution-across-ant-genus",
@@ -26,5 +12,12 @@
     "title": "Statistics from SRA (ants)",
     "section": "Distribution across ant genus",
     "text": "Distribution across ant genus"
+  },
+  {
+    "objectID": "contact.html",
+    "href": "contact.html",
+    "title": "Contact",
+    "section": "",
+    "text": "Biplabendu (Billu) Das\nbiplabendu.das@gmail.com\nhttps://biplabendu.github.io/homepage/"
   }
 ]
