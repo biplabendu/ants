@@ -22,8 +22,8 @@ website:
     left:
       - text: "Ant data in SRA database"
         file: index.qmd
-      - text: "AntWiki"
-        file: antwiki.qmd
+      # - text: "AntWiki"
+      #   file: antwiki.qmd
       
       # ###-###-###-###-###-###-###-###-###-###-###-###-
       # - text: "Jammer Stats"

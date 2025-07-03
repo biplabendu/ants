@@ -1,5 +1,7 @@
 ---
 title: "Statistics from SRA (ants)"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -12,15 +14,18 @@ test <- FALSE
 Last updated on `r dttm`.
 
 ---
+# GOAL
 
-This website contain statistics obtained from [# Sequence Read Archive (SRA) database](https://www.ncbi.nlm.nih.gov/sra).
+This website is daily updated, and performs the following two steps:
 
-For questions, please contact us [via email](contact.qmd).
+1. use webscraping to pull tabular information from [Wikipedia page](https://en.wikipedia.org/wiki/List_of_ant_genera) to get a list of all ant genus.
+
+2. use API calls to gather and visualize the number of datasets deposited in the [Sequence Read Archive (SRA) database](https://www.ncbi.nlm.nih.gov/sra) for each ant genus.
 
 
 ___
 
-# Number of datasets in SRA
+# Ant genus and relevant information
 
 ```{r}
 library(rvest)
@@ -28,31 +33,60 @@ library(dplyr)
 library(ggplot2)
 
 # Specify the URL of the webpage
-url <- c("https://www.antwiki.org/wiki/index.php?title=Category:Extant_genus&pageuntil=Messor#mw-pages",
-         "https://www.antwiki.org/wiki/index.php?title=Category:Extant_genus&pagefrom=Messor#mw-pages",
-         "https://www.antwiki.org/wiki/index.php?title=Category:Extant_genus&pagefrom=Veromessor#mw-pages")
+url <- "https://en.wikipedia.org/wiki/List_of_ant_genera"
 
-# Read the webpage and extract the ant species names
-for (i in 1:length(url)) {
-  page <- read_html(url[i])
-  if (i==1) {
-    genus_names <- page %>%
-      html_nodes(paste0(".mw-category-group a")) %>%
-      html_text()
-  } else {
-    foo <- page %>%
-      html_nodes(paste0(".mw-category-group a")) %>%
-      html_text()
-    genus_names <- c(genus_names, foo)
-  }
+
+tbl_genus <- read_html(url) |> 
+  html_nodes(
+    xpath = "//table[contains(@class, \'wikitable sortable\')]"
+  ) |> 
+  html_table(header = TRUE, fill = TRUE) |> 
+  purrr::map_dfr(
+    ~ .x |> 
+      janitor::row_to_names(1)
+  ) |> 
+  janitor::clean_names() |> 
+  mutate(
+    across(
+      everything(),
+      ~ stringr::str_replace_all(
+        .x,
+        "†",
+        ""
+      )
+    ),
+    no_of_species = as.integer(no_of_species)
+  ) |>
+  select(
+    genus_name:type_species
+  )
+
+tbl_genus |> 
+  arrange(desc(no_of_species)) |> 
+  reactable::reactable(
+    sortable = TRUE,
+    resizable = TRUE,
+    searchable = TRUE,
+    filterable = TRUE,
+    showPageSizeOptions = TRUE,
+    columns = list(
+      binomial_authority = reactable::colDef(minWidth = 120),
+      type_species = reactable::colDef(minWidth = 190)
+    )
+  )
+
+```
+
+# Number of datasets in SRA
+
+```{r}
+# Specify genus
+genus_names <- tbl_genus$genus_name |> unique()
+
+if (test) {
+  genus_names <- c("Camponotus", "Pogonomyrmex")
 }
-
-# Subset for test
-if(test) {
-  genus_names <- genus_names[1:2]
-}
-
-
+  
 # for each genus name,
 # - check the sra database to look for rnaseq datasets
 npubs <- list()
@@ -69,7 +103,11 @@ for (i in 1:length(genus_names)) {
     how_many <- 10000
   }
   
-  search_results <- rentrez::entrez_search(db, term = query, retmax = how_many)
+  search_results <- rentrez::entrez_search(
+    db, 
+    term = query, 
+    retmax = how_many
+  )
   ids <- search_results$ids
   
   # how many unique datasets?
@@ -90,11 +128,12 @@ dat <-
   # ) %>%
   as_tibble() |> 
   mutate(genus_name=as.character(genus_name)) %>% 
-  mutate(genus_name2 = ifelse(npubs<10, "OTHER GENUS", genus_name)) %>% 
+  mutate(genus_name2 = if_else(
+    npubs < 10, "OTHER GENUS", genus_name)
+  ) %>% 
   group_by(genus_name2) %>% 
   summarize(npubs = sum(npubs, na.rm = T)) %>% 
   arrange(npubs)
-# filter(genus_name2 != "others")
 
 
 ## Make table
@@ -122,13 +161,13 @@ dat |>
 genus.lvls <- dat %>% pull(genus_name2)
 
 
-dat %>% 
-  mutate(genus_name2 = factor(
+p <- dat %>% 
+  mutate(
+    genus_name2 = factor(
       genus_name2, 
       levels = genus.lvls
     )
   ) %>% 
-  
   ggplot(aes(x=genus_name2, y=npubs)) +
   # geom_col(fill="grey10", width = .4) +
   geom_histogram(
@@ -146,6 +185,9 @@ dat %>%
   coord_flip()
 # theme(axis.title.x = element_blank())
 # theme(axis.title.y = element_blank())
+
+plotly::ggplotly(p)
+
 
 ```
 

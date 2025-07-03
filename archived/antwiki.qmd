@@ -1,5 +1,7 @@
 ---
 title: "Statistics from Ant Wiki"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r}
@@ -174,11 +176,11 @@ for(i in 1:length(names)) {
   Sys.sleep(5)
   ###-###-###-###-###-###-
   name <- names[i]
-  cat("Downloading data for: ", name)
+  cat("Downloading data for:", name)
   
   html <- xml2::read_html(
     glue::glue(
-      "https://antwiki.org/wiki/index.php?title={name}&action=edit" 
+      "https://antwiki.org/wiki/index.php?title={name}" 
     )
   )
   
