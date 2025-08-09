@@ -1,17 +1,10 @@
 [
   {
-    "objectID": "contact.html",
-    "href": "contact.html",
-    "title": "Contact",
-    "section": "",
-    "text": "Biplabendu (Billu) Das\nbiplabendu.das@gmail.com\nhttps://biplabendu.github.io/homepage/"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Statistics from SRA (ants)",
     "section": "",
-    "text": "Last updated on 2025-08-08."
+    "text": "Last updated on 2025-08-09."
   },
   {
     "objectID": "index.html#distribution-across-ant-genus",
@@ -19,5 +12,12 @@
     "title": "Statistics from SRA (ants)",
     "section": "Distribution across ant genus",
     "text": "Distribution across ant genus"
+  },
+  {
+    "objectID": "contact.html",
+    "href": "contact.html",
+    "title": "Contact",
+    "section": "",
+    "text": "Biplabendu (Billu) Das\nbiplabendu.das@gmail.com\nhttps://biplabendu.github.io/homepage/"
   }
 ]
